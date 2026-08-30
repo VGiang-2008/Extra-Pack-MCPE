@@ -1,0 +1,18 @@
+{
+  "name": "Action & Stuff",
+  "description": "Action & Stuff make your world get vibrant by hundred animation!",
+  "version": "1.11.0",
+  "author": "Echo",
+  "type": "Resource Packs",
+  "format": ".mcpack",
+  "cover": "assets/main.jpg",
+  "previews": [
+    "assets/1.jpg",
+    "assets/2.jpg",
+    "assets/3.jpg",
+    "assets/4.jpg",
+    "assets/5.jpg",
+    "assets/6.jpg"
+  ],
+  "download": "download/action_and_stuff.mcpack"
+}
