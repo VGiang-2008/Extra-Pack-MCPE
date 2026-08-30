@@ -5,9 +5,8 @@
   "author": "Vi Tul",
   "type": "Resources Pack",
   "format": ".mcpack",
-  "cover": "assets/pack_icon.png",
+  "cover": "assets/main.png",
   "previews": [
-    "assets/main.png",
     "assets/1.png",
     "assets/2.png",
     "assets/3.png",
