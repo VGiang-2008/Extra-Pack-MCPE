@@ -1,7 +1,7 @@
 {
   "name": "Faithful 32x",
   "description": "A higher-resolution Minecraft experience.",
-  "version": "VERSION",
+  "version": "1.0.0",
   "author": "Faithful",
   "type": "Resource Pack",
   "format": ".mcpack",
