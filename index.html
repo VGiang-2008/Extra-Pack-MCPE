@@ -1,0 +1,1934 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0ad6ff">
+  <meta name="description" content="Extra Pack For Bedrock — a clean, fast library for Minecraft Bedrock packs.">
+  <title>Extra Pack For Bedrock</title>
+
+  <link rel="icon" type="image/png" href="source/assets/app_icon.png">
+
+  <style>
+    /* =========================================================
+       EXTRA PACK FOR BEDROCK
+       Single-file static site
+       Data source:
+         packs/index.json
+         packs/<pack>/project.json
+       ========================================================= */
+
+    :root {
+      --page: #f6f8fa;
+      --surface: #ffffff;
+      --surface-soft: #f1f5f7;
+      --ink: #101416;
+      --ink-soft: #4e5a60;
+      --ink-faint: #7b878d;
+      --line: rgba(16, 20, 22, .10);
+      --line-strong: rgba(16, 20, 22, .16);
+
+      --cyan: #0ad6ff;
+      --cyan-deep: #00a7cc;
+      --cyan-soft: #e8fbff;
+
+      --hero-start: #f5f5f5;
+      --hero-end: #0ad6ff;
+
+      --shadow-sm: 0 6px 20px rgba(16, 20, 22, .06);
+      --shadow-md: 0 14px 38px rgba(16, 20, 22, .10);
+      --shadow-lg: 0 24px 70px rgba(16, 20, 22, .14);
+
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
+      --radius-xl: 28px;
+
+      --max: 1200px;
+      --ease: cubic-bezier(.2, .75, .25, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      background: var(--page);
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    body.no-scroll {
+      overflow: hidden;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+    }
+
+    ::selection {
+      background: rgba(10, 214, 255, .28);
+    }
+
+    /* -----------------------------
+       Shared
+       ----------------------------- */
+
+    .container {
+      width: min(var(--max), calc(100% - 40px));
+      margin-inline: auto;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .muted {
+      color: var(--ink-faint);
+    }
+
+    .btn {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 16px;
+      border-radius: 12px;
+      font-weight: 750;
+      cursor: pointer;
+      transition:
+        transform .18s var(--ease),
+        box-shadow .18s var(--ease),
+        background .18s ease,
+        border-color .18s ease;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      color: #042129;
+      background: var(--cyan);
+      box-shadow: 0 10px 26px rgba(10, 214, 255, .22);
+    }
+
+    .btn-primary:hover {
+      background: #34defd;
+      box-shadow: 0 14px 32px rgba(10, 214, 255, .30);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      color: var(--ink);
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(16,20,22,.10);
+    }
+
+    .btn-secondary:hover {
+      background: #fff;
+      border-color: rgba(16,20,22,.18);
+      transform: translateY(-1px);
+    }
+
+    /* -----------------------------
+       Header
+       ----------------------------- */
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .header-inner {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 6px 20px rgba(10, 214, 255, .16);
+    }
+
+    .brand-text {
+      min-width: 0;
+    }
+
+    .brand-name {
+      display: block;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: -.01em;
+      white-space: nowrap;
+    }
+
+    .brand-sub {
+      display: block;
+      margin-top: 1px;
+      color: var(--ink-faint);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .header-nav {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-btn {
+      min-height: 40px;
+      padding: 0 12px;
+      border-radius: 10px;
+      color: var(--ink-soft);
+      background: transparent;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 800;
+      transition: background .18s ease, color .18s ease;
+    }
+
+    .nav-btn:hover,
+    .nav-btn.active {
+      color: var(--ink);
+      background: var(--surface-soft);
+    }
+
+    .nav-btn .count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      margin-left: 4px;
+      padding-inline: 5px;
+      border-radius: 999px;
+      color: #006b80;
+      background: var(--cyan-soft);
+      font-size: 10px;
+    }
+
+    /* -----------------------------
+       Hero
+       ----------------------------- */
+
+    .hero-wrap {
+      padding: 22px 0 0;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 430px;
+      overflow: hidden;
+      border: 1px solid rgba(16,20,22,.06);
+      border-radius: var(--radius-xl);
+      background: #f5f5f5;
+      background: linear-gradient(
+        90deg,
+        rgba(245, 245, 245, 1) 0%,
+        rgba(10, 214, 255, 1) 100%
+      );
+      box-shadow: var(--shadow-md);
+      isolation: isolate;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 70% 20%, rgba(255,255,255,.75), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,.20), rgba(255,255,255,0));
+      z-index: -1;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      bottom: -120px;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.22);
+      filter: blur(14px);
+      z-index: -1;
+    }
+
+    .hero-grid {
+      min-height: 430px;
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      align-items: center;
+      gap: 30px;
+      padding: clamp(36px, 7vw, 70px);
+    }
+
+    .hero-copy {
+      max-width: 690px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border: 1px solid rgba(16,20,22,.08);
+      border-radius: 999px;
+      background: rgba(255,255,255,.66);
+      color: #25515b;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 0 5px rgba(10,214,255,.11);
+    }
+
+    .hero h1 {
+      margin: 18px 0 14px;
+      font-size: clamp(42px, 6vw, 74px);
+      line-height: .98;
+      letter-spacing: -.055em;
+    }
+
+    .hero h1 .accent {
+      color: #008daa;
+    }
+
+    .hero-description {
+      max-width: 610px;
+      margin: 0;
+      color: #294148;
+      font-size: 17px;
+      line-height: 1.65;
+      font-weight: 560;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .hero-showcase {
+      justify-self: end;
+      width: min(100%, 410px);
+    }
+
+    .hero-logo-stage {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      display: grid;
+      place-items: center;
+    }
+
+    .hero-logo-glow {
+      position: absolute;
+      width: 82%;
+      height: 82%;
+      border-radius: 34%;
+      background: rgba(255,255,255,.34);
+      filter: blur(26px);
+    }
+
+    .hero-logo {
+      position: relative;
+      width: min(82%, 300px);
+      border-radius: 26px;
+      box-shadow:
+        0 34px 80px rgba(0, 72, 88, .20),
+        0 6px 16px rgba(0, 0, 0, .12);
+      transform: rotate(-2deg);
+    }
+
+    /* -----------------------------
+       Toolbar
+       ----------------------------- */
+
+    .content-section {
+      padding: 52px 0 80px;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+
+    .section-heading p {
+      margin: 5px 0 0;
+      color: var(--ink-faint);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .sort-select {
+      height: 42px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--ink);
+      outline: none;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .search-box {
+      position: relative;
+      width: min(330px, 48vw);
+    }
+
+    .search-box input {
+      width: 100%;
+      height: 42px;
+      padding: 0 14px 0 38px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--ink);
+      outline: none;
+      font-size: 12px;
+      font-weight: 650;
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .search-box input::placeholder {
+      color: #9aa5aa;
+    }
+
+    .search-box input:focus {
+      border-color: rgba(10,214,255,.55);
+      box-shadow: 0 0 0 4px rgba(10,214,255,.09);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      translate: 0 -50%;
+      width: 15px;
+      height: 15px;
+      color: #8a979c;
+      pointer-events: none;
+    }
+
+    /* -----------------------------
+       Pack grid
+       ----------------------------- */
+
+    .pack-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .pack-card {
+      position: relative;
+      overflow: hidden;
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+      transition:
+        transform .22s var(--ease),
+        box-shadow .22s var(--ease),
+        border-color .22s ease;
+    }
+
+    .pack-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(10,214,255,.28);
+      box-shadow: var(--shadow-md);
+    }
+
+    .pack-cover-link {
+      display: block;
+    }
+
+    .pack-cover {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      background:
+        linear-gradient(135deg, #e9eef0, #dbeff3);
+    }
+
+    .pack-card-body {
+      padding: 15px 15px 16px;
+    }
+
+    .pack-topline {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .pack-title {
+      min-width: 0;
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.28;
+      letter-spacing: -.01em;
+      font-weight: 850;
+    }
+
+    .favorite-btn {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+      color: #859197;
+      cursor: pointer;
+      transition:
+        transform .18s var(--ease),
+        background .18s ease,
+        color .18s ease,
+        border-color .18s ease;
+    }
+
+    .favorite-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(10,214,255,.26);
+      background: var(--cyan-soft);
+      color: #007f9a;
+    }
+
+    .favorite-btn.is-favorite {
+      border-color: rgba(10,214,255,.20);
+      background: var(--cyan-soft);
+      color: #0092ae;
+    }
+
+    .pack-description {
+      min-height: 38px;
+      margin: 9px 0 13px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      color: var(--ink-soft);
+      font-size: 12px;
+      line-height: 1.55;
+      font-weight: 550;
+    }
+
+    .pack-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 23px;
+      padding: 0 7px;
+      border-radius: 7px;
+      color: #5b686e;
+      background: #f3f6f7;
+      font-size: 10px;
+      font-weight: 850;
+    }
+
+    .tag.cyan {
+      color: #007e96;
+      background: var(--cyan-soft);
+    }
+
+    .tag-version {
+      margin-left: auto;
+      color: #7a858a;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    /* -----------------------------
+       States
+       ----------------------------- */
+
+    .state {
+      grid-column: 1 / -1;
+      min-height: 260px;
+      display: grid;
+      place-items: center;
+      padding: 32px;
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius-md);
+      background: rgba(255,255,255,.55);
+      text-align: center;
+    }
+
+    .state-inner {
+      max-width: 440px;
+    }
+
+    .state-title {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 850;
+    }
+
+    .state-text {
+      margin: 8px 0 0;
+      color: var(--ink-faint);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .spinner {
+      width: 28px;
+      height: 28px;
+      margin: 0 auto 12px;
+      border: 3px solid rgba(16,20,22,.10);
+      border-top-color: var(--cyan);
+      border-radius: 50%;
+      animation: spin .75s linear infinite;
+    }
+
+    @keyframes spin {
+      to { rotate: 360deg; }
+    }
+
+    /* -----------------------------
+       Detail view
+       ----------------------------- */
+
+    #detailView {
+      display: none;
+    }
+
+    .detail-page {
+      padding: 34px 0 80px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 0 11px;
+      margin-bottom: 20px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--ink-soft);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      color: var(--ink);
+      border-color: var(--line-strong);
+    }
+
+    .detail-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      box-shadow: var(--shadow-md);
+    }
+
+    .detail-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(360px, .92fr);
+      gap: 34px;
+      padding: 24px;
+    }
+
+    .detail-cover-wrap {
+      overflow: hidden;
+      border-radius: 17px;
+      background: #e9eff1;
+      border: 1px solid var(--line);
+    }
+
+    .detail-cover {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+    }
+
+    .detail-copy {
+      padding: 7px 6px 7px 0;
+    }
+
+    .detail-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 25px;
+      padding: 0 8px;
+      border-radius: 7px;
+      background: var(--cyan-soft);
+      color: #007d94;
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .detail-title {
+      margin: 13px 0 7px;
+      font-size: clamp(30px, 4vw, 46px);
+      line-height: 1.02;
+      letter-spacing: -.045em;
+    }
+
+    .detail-author {
+      margin: 0 0 20px;
+      color: var(--ink-faint);
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .detail-description {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 14px;
+      line-height: 1.72;
+      white-space: pre-line;
+    }
+
+    .detail-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 25px;
+    }
+
+    .detail-info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+      margin-top: 24px;
+    }
+
+    .info-box {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fbfcfc;
+    }
+
+    .info-box small {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ink-faint);
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .info-box strong {
+      display: block;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 850;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-preview {
+      padding: 0 24px 24px;
+    }
+
+    .subheading {
+      margin: 0 0 14px;
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: -.02em;
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .preview {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      cursor: zoom-in;
+      transition: transform .20s var(--ease), box-shadow .20s var(--ease);
+    }
+
+    .preview:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* -----------------------------
+       Footer
+       ----------------------------- */
+
+    .site-footer {
+      padding: 24px 0 36px;
+      border-top: 1px solid var(--line);
+      color: var(--ink-faint);
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center;
+    }
+
+    /* -----------------------------
+       Image lightbox
+       ----------------------------- */
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: none;
+      place-items: center;
+      padding: 24px;
+      background: rgba(11, 15, 17, .82);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .lightbox.open {
+      display: grid;
+    }
+
+    .lightbox img {
+      max-width: min(1100px, 94vw);
+      max-height: 88vh;
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.10);
+      color: #fff;
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    /* -----------------------------
+       Toast
+       ----------------------------- */
+
+    .toast-stack {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 250;
+      display: grid;
+      gap: 8px;
+      width: min(340px, calc(100vw - 36px));
+      pointer-events: none;
+    }
+
+    .toast {
+      padding: 12px 14px;
+      border: 1px solid rgba(255,255,255,.36);
+      border-radius: 12px;
+      background: rgba(15, 21, 24, .92);
+      color: #fff;
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 700;
+      box-shadow: var(--shadow-md);
+      animation: toast-in .22s var(--ease);
+    }
+
+    @keyframes toast-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* -----------------------------
+       Responsive
+       ----------------------------- */
+
+    @media (max-width: 1050px) {
+      .pack-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr .72fr;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .hero-copy {
+        margin-inline: auto;
+      }
+
+      .hero-actions {
+        justify-content: center;
+      }
+
+      .hero-showcase {
+        justify-self: center;
+      }
+
+      .toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .toolbar-right {
+        width: 100%;
+      }
+
+      .search-box {
+        width: 100%;
+        flex: 1;
+      }
+
+      .detail-main {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-copy {
+        padding-right: 0;
+      }
+
+      .preview-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 650px) {
+      .container {
+        width: min(var(--max), calc(100% - 28px));
+      }
+
+      .header-inner {
+        min-height: 64px;
+      }
+
+      .brand-sub,
+      .header-nav .nav-btn:first-child {
+        display: none;
+      }
+
+      .brand-name {
+        font-size: 13px;
+      }
+
+      .hero-wrap {
+        padding-top: 12px;
+      }
+
+      .hero {
+        min-height: auto;
+        border-radius: 20px;
+      }
+
+      .hero-grid {
+        min-height: auto;
+        padding: 34px 24px 30px;
+        gap: 22px;
+      }
+
+      .hero h1 {
+        font-size: clamp(40px, 12vw, 56px);
+      }
+
+      .hero-description {
+        font-size: 15px;
+      }
+
+      .hero-logo {
+        width: min(68%, 240px);
+      }
+
+      .content-section {
+        padding-top: 38px;
+      }
+
+      .pack-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 11px;
+      }
+
+      .pack-card {
+        border-radius: 13px;
+      }
+
+      .pack-card-body {
+        padding: 12px;
+      }
+
+      .pack-title {
+        font-size: 13px;
+      }
+
+      .pack-description {
+        font-size: 11px;
+      }
+
+      .pack-meta {
+        gap: 4px;
+      }
+
+      .tag,
+      .tag-version {
+        font-size: 9px;
+      }
+
+      .detail-main,
+      .detail-preview {
+        padding: 14px;
+      }
+
+      .detail-card {
+        border-radius: 16px;
+      }
+
+      .detail-title {
+        font-size: 34px;
+      }
+
+      .detail-info-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .pack-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pack-cover {
+        aspect-ratio: 16 / 9;
+      }
+
+      .toolbar-right {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .sort-select {
+        width: 100%;
+      }
+
+      .preview-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        transition-duration: .001ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#" aria-label="Extra Pack For Bedrock home" onclick="goHome(); return false;">
+        <img class="brand-mark" src="source/assets/app_icon.png" alt="">
+        <span class="brand-text">
+          <span class="brand-name">Extra Pack For Bedrock</span>
+          <span class="brand-sub">Minecraft Bedrock pack library</span>
+        </span>
+      </a>
+
+      <nav class="header-nav" aria-label="Main navigation">
+        <button class="nav-btn active" id="navHome" onclick="goHome()">Home</button>
+        <button class="nav-btn" id="navFavorites" onclick="showFavorites()">
+          Favorites <span class="count" id="favoriteCount">0</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- =========================
+         HOME
+         ========================= -->
+    <section id="homeView">
+      <div class="hero-wrap">
+        <div class="container">
+          <section class="hero" aria-labelledby="heroTitle">
+            <div class="hero-grid">
+              <div class="hero-copy">
+                <div class="eyebrow">
+                  <span class="eyebrow-dot" aria-hidden="true"></span>
+                  Bedrock pack library
+                </div>
+
+                <h1 id="heroTitle">
+                  Extra Pack<br>
+                  <span class="accent">For Bedrock</span>
+                </h1>
+
+                <p class="hero-description">
+                  A focused, lightweight place to discover Minecraft Bedrock
+                  resource packs, shaders, addons, worlds and other projects.
+                </p>
+
+                <div class="hero-actions">
+                  <button class="btn btn-primary" onclick="focusSearch()">
+                    Search packs
+                  </button>
+                  <button class="btn btn-secondary" onclick="scrollToPacks()">
+                    Browse library
+                  </button>
+                </div>
+              </div>
+
+              <div class="hero-showcase" aria-hidden="true">
+                <div class="hero-logo-stage">
+                  <div class="hero-logo-glow"></div>
+                  <img class="hero-logo" src="source/assets/app_icon.png" alt="">
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <section class="content-section" id="librarySection">
+        <div class="container">
+          <div class="toolbar">
+            <div class="section-heading">
+              <h2 id="sectionTitle">Featured Packs</h2>
+              <p id="sectionSubtitle">Loading the library…</p>
+            </div>
+
+            <div class="toolbar-right">
+              <div class="search-box">
+                <label class="sr-only" for="searchInput">Search packs</label>
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+                  <path d="m16 16 4.2 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+                <input id="searchInput" type="search" placeholder="Search packs…" autocomplete="off">
+              </div>
+
+              <label class="sr-only" for="sortSelect">Sort packs</label>
+              <select id="sortSelect" class="sort-select" aria-label="Sort packs">
+                <option value="featured">Featured</option>
+                <option value="name">Name A–Z</option>
+                <option value="newest">Newest</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="pack-grid" id="packGrid" aria-live="polite">
+            <div class="state">
+              <div class="state-inner">
+                <div class="spinner"></div>
+                <p class="state-title">Loading packs</p>
+                <p class="state-text">Reading the pack library from the repository.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- =========================
+         DETAIL
+         ========================= -->
+    <section id="detailView">
+      <div class="detail-page">
+        <div class="container">
+          <button class="back-link" onclick="goHome()">
+            ← Back to library
+          </button>
+
+          <article class="detail-card" id="detailCard">
+            <div class="detail-main">
+              <div class="detail-cover-wrap">
+                <img id="detailCover" class="detail-cover" src="source/assets/app_icon.png" alt="">
+              </div>
+
+              <div class="detail-copy">
+                <div id="detailKicker" class="detail-kicker">Bedrock Pack</div>
+                <h1 id="detailTitle" class="detail-title">Pack</h1>
+                <p id="detailAuthor" class="detail-author">by Extra Pack Team</p>
+                <p id="detailDescription" class="detail-description"></p>
+
+                <div class="detail-actions">
+                  <a id="downloadButton" class="btn btn-primary" href="#" download>
+                    Download pack
+                  </a>
+                  <button id="detailFavoriteButton" class="btn btn-secondary">
+                    ♡ Add to favorites
+                  </button>
+                </div>
+
+                <div class="detail-info-grid">
+                  <div class="info-box">
+                    <small>Version</small>
+                    <strong id="detailVersion">—</strong>
+                  </div>
+                  <div class="info-box">
+                    <small>Type</small>
+                    <strong id="detailType">—</strong>
+                  </div>
+                  <div class="info-box">
+                    <small>Format</small>
+                    <strong id="detailFormat">—</strong>
+                  </div>
+                  <div class="info-box">
+                    <small>Target</small>
+                    <strong id="detailTarget">Minecraft Bedrock</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-preview">
+              <h2 class="subheading">Preview</h2>
+              <div class="preview-grid" id="previewGrid"></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span>Extra Pack For Bedrock</span>
+      <span>Static GitHub Pages library · Favorites are stored locally</span>
+    </div>
+  </footer>
+
+  <!-- Image lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image preview">
+    <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close image preview">×</button>
+    <img id="lightboxImage" src="" alt="">
+  </div>
+
+  <!-- Toasts -->
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+  <script>
+    /* =========================================================
+       DATA / STATE
+       ========================================================= */
+
+    const INDEX_URL = "packs/index.json";
+    const FAVORITES_KEY = "extra-pack-for-bedrock:favorites";
+
+    let packEntries = [];
+    let packs = [];
+    let currentPack = null;
+
+    const $ = (selector) => document.querySelector(selector);
+
+    function getFavorites() {
+      try {
+        const value = JSON.parse(localStorage.getItem(FAVORITES_KEY) || "[]");
+        return Array.isArray(value) ? value : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function setFavorites(list) {
+      localStorage.setItem(FAVORITES_KEY, JSON.stringify(list));
+      updateFavoriteCount();
+    }
+
+    function updateFavoriteCount() {
+      $("#favoriteCount").textContent = String(getFavorites().length);
+    }
+
+    function isFavorite(id) {
+      return getFavorites().includes(id);
+    }
+
+    function toggleFavorite(id) {
+      const favorites = getFavorites();
+      const index = favorites.indexOf(id);
+
+      if (index >= 0) {
+        favorites.splice(index, 1);
+        setFavorites(favorites);
+        showToast("Removed from favorites.");
+        return false;
+      }
+
+      favorites.push(id);
+      setFavorites(favorites);
+      showToast("Added to favorites.");
+      return true;
+    }
+
+    /* =========================================================
+       PACK LOADING
+       ========================================================= */
+
+    async function loadJSON(url) {
+      const response = await fetch(url, { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error("HTTP " + response.status + " for " + url);
+      }
+      return response.json();
+    }
+
+    function normalizeEntry(entry) {
+      if (typeof entry === "string") {
+        return {
+          id: entry,
+          path: entry
+        };
+      }
+
+      if (!entry || typeof entry !== "object") {
+        return null;
+      }
+
+      const id = String(entry.id || entry.name || "").trim();
+      const path = String(entry.path || id).trim();
+
+      if (!id || !path) return null;
+
+      return {
+        ...entry,
+        id,
+        path
+      };
+    }
+
+    async function fetchProject(entry) {
+      const normalized = normalizeEntry(entry);
+      if (!normalized) throw new Error("Invalid pack entry.");
+
+      const projectURL =
+        "packs/" +
+        encodeURIComponent(normalized.path) +
+        "/project.json";
+
+      const project = await loadJSON(projectURL);
+
+      return {
+        ...normalized,
+        ...project,
+        id: normalized.id,
+        path: normalized.path
+      };
+    }
+
+    async function loadLibrary() {
+      try {
+        const indexData = await loadJSON(INDEX_URL);
+
+        if (Array.isArray(indexData)) {
+          packEntries = indexData;
+        } else if (Array.isArray(indexData.packs)) {
+          packEntries = indexData.packs;
+        } else {
+          throw new Error("packs/index.json must be an array or { packs: [] }.");
+        }
+
+        const results = await Promise.allSettled(
+          packEntries.map(fetchProject)
+        );
+
+        packs = results
+          .filter(result => result.status === "fulfilled")
+          .map(result => result.value);
+
+        if (!packs.length) {
+          throw new Error("No valid project.json files were loaded.");
+        }
+
+        updateFavoriteCount();
+        renderPacks();
+
+        const route = getRoute();
+        if (route.type === "pack") {
+          openPackById(route.id);
+        }
+      } catch (error) {
+        console.error(error);
+        $("#sectionSubtitle").textContent = "The library could not be loaded.";
+        $("#packGrid").innerHTML = `
+          <div class="state">
+            <div class="state-inner">
+              <p class="state-title">Library unavailable</p>
+              <p class="state-text">
+                Make sure <b>packs/index.json</b> exists and every listed pack
+                contains a valid <b>project.json</b>.
+              </p>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    /* =========================================================
+       PATH HELPERS
+       ========================================================= */
+
+    function assetURL(pack, relativePath) {
+      if (!relativePath) return "source/assets/app_icon.png";
+      return "packs/" + encodeURIComponent(pack.path) + "/" + String(relativePath).replace(/^\/+/, "");
+    }
+
+    function projectImage(pack) {
+      return pack.cover || pack.icon || "pack/pack_icon.png";
+    }
+
+    function projectPreviews(pack) {
+      if (Array.isArray(pack.previews)) return pack.previews;
+      if (Array.isArray(pack.screenshots)) return pack.screenshots;
+      return [];
+    }
+
+    /* =========================================================
+       RENDERING
+       ========================================================= */
+
+    function filteredAndSortedPacks(source = packs) {
+      const query = $("#searchInput").value.trim().toLowerCase();
+      const sort = $("#sortSelect").value;
+
+      let result = source.filter(pack => {
+        if (!query) return true;
+
+        const text = [
+          pack.name,
+          pack.description,
+          pack.author,
+          pack.type,
+          pack.version,
+          ...(Array.isArray(pack.tags) ? pack.tags : [])
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+
+        return text.includes(query);
+      });
+
+      if (sort === "name") {
+        result.sort((a, b) =>
+          String(a.name || a.id).localeCompare(
+            String(b.name || b.id),
+            undefined,
+            { sensitivity: "base" }
+          )
+        );
+      } else if (sort === "newest") {
+        result.sort((a, b) =>
+          String(b.date || b.updated || "").localeCompare(
+            String(a.date || a.updated || "")
+          )
+        );
+      } else {
+        result.sort((a, b) =>
+          Number(Boolean(b.featured)) - Number(Boolean(a.featured))
+        );
+      }
+
+      return result;
+    }
+
+    function renderPacks(source = packs) {
+      const grid = $("#packGrid");
+      const result = filteredAndSortedPacks(source);
+
+      const query = $("#searchInput").value.trim();
+
+      $("#sectionTitle").textContent =
+        query ? "Search Results" :
+        source.length !== packs.length ? "Your Favorites" :
+        "Featured Packs";
+
+      $("#sectionSubtitle").textContent =
+        result.length + " pack" + (result.length === 1 ? "" : "s") +
+        (query ? " matching your search." : ".");
+
+      grid.innerHTML = "";
+
+      if (!result.length) {
+        grid.innerHTML = `
+          <div class="state">
+            <div class="state-inner">
+              <p class="state-title">Nothing found</p>
+              <p class="state-text">
+                Try another search, or add a pack to your local favorites first.
+              </p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+
+      result.forEach(pack => {
+        const article = document.createElement("article");
+        article.className = "pack-card";
+
+        const image = assetURL(pack, projectImage(pack));
+        const name = escapeHTML(pack.name || pack.id);
+        const description = escapeHTML(
+          pack.description || "No description available."
+        );
+        const type = escapeHTML(pack.type || "Bedrock Pack");
+        const version = escapeHTML(pack.version || "Unknown");
+
+        article.innerHTML = `
+          <a class="pack-cover-link" href="#pack/${encodeURIComponent(pack.id)}" aria-label="Open ${name}">
+            <img
+              class="pack-cover"
+              src="${image}"
+              alt=""
+              loading="lazy"
+              onerror="this.src='source/assets/app_icon.png'"
+            >
+          </a>
+
+          <div class="pack-card-body">
+            <div class="pack-topline">
+              <h3 class="pack-title">${name}</h3>
+
+              <button
+                class="favorite-btn ${isFavorite(pack.id) ? "is-favorite" : ""}"
+                type="button"
+                aria-label="${isFavorite(pack.id) ? "Remove from favorites" : "Add to favorites"}"
+                title="${isFavorite(pack.id) ? "Remove from favorites" : "Add to favorites"}"
+              >
+                ${isFavorite(pack.id) ? "♥" : "♡"}
+              </button>
+            </div>
+
+            <p class="pack-description">${description}</p>
+
+            <div class="pack-meta">
+              <span class="tag cyan">${type}</span>
+              <span class="tag">${version}</span>
+              ${pack.featured ? '<span class="tag">Featured</span>' : ''}
+            </div>
+          </div>
+        `;
+
+        const fav = article.querySelector(".favorite-btn");
+        fav.addEventListener("click", event => {
+          event.preventDefault();
+          event.stopPropagation();
+
+          const active = toggleFavorite(pack.id);
+          fav.classList.toggle("is-favorite", active);
+          fav.textContent = active ? "♥" : "♡";
+          fav.setAttribute(
+            "aria-label",
+            active ? "Remove from favorites" : "Add to favorites"
+          );
+          fav.setAttribute(
+            "title",
+            active ? "Remove from favorites" : "Add to favorites"
+          );
+        });
+
+        fragment.appendChild(article);
+      });
+
+      grid.appendChild(fragment);
+    }
+
+    /* =========================================================
+       DETAIL
+       ========================================================= */
+
+    function openPackById(id) {
+      const pack = packs.find(item => item.id === id);
+
+      if (!pack) {
+        goHome();
+        showToast("That pack could not be found.");
+        return;
+      }
+
+      currentPack = pack;
+      renderDetail(pack);
+
+      $("#homeView").style.display = "none";
+      $("#detailView").style.display = "block";
+      $("#navHome").classList.remove("active");
+      $("#navFavorites").classList.remove("active");
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderDetail(pack) {
+      const cover = assetURL(pack, projectImage(pack));
+
+      $("#detailCover").src = cover;
+      $("#detailCover").alt = pack.name || pack.id;
+      $("#detailCover").onerror = () => {
+        $("#detailCover").src = "source/assets/app_icon.png";
+      };
+
+      $("#detailKicker").textContent = pack.type || "Bedrock Pack";
+      $("#detailTitle").textContent = pack.name || pack.id;
+      $("#detailAuthor").textContent =
+        "by " + (pack.author || "Extra Pack Team");
+      $("#detailDescription").textContent =
+        pack.description || "No description available.";
+
+      $("#detailVersion").textContent = pack.version || "Unknown";
+      $("#detailType").textContent = pack.type || "Bedrock Pack";
+      $("#detailFormat").textContent = pack.format || ".mcpack";
+      $("#detailTarget").textContent =
+        pack.target || pack.game || "Minecraft Bedrock";
+
+      const download = $("#downloadButton");
+
+      if (pack.download) {
+        download.href = assetURL(pack, pack.download);
+        download.classList.remove("hidden");
+      } else {
+        download.removeAttribute("href");
+        download.classList.add("hidden");
+      }
+
+      const favorite = isFavorite(pack.id);
+      updateDetailFavoriteButton(favorite);
+
+      const grid = $("#previewGrid");
+      grid.innerHTML = "";
+
+      const previews = projectPreviews(pack);
+
+      if (!previews.length) {
+        grid.innerHTML = `
+          <div class="state" style="grid-column:1/-1; min-height:150px;">
+            <div class="state-inner">
+              <p class="state-title">No screenshots yet</p>
+              <p class="state-text">Add preview paths to project.json when you are ready.</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      previews.forEach((preview, index) => {
+        const img = document.createElement("img");
+        img.className = "preview";
+        img.loading = "lazy";
+        img.src = assetURL(pack, preview);
+        img.alt = (pack.name || "Pack") + " preview " + (index + 1);
+        img.onerror = () => img.remove();
+        img.addEventListener("click", () => openLightbox(img.src, img.alt));
+        grid.appendChild(img);
+      });
+    }
+
+    function updateDetailFavoriteButton(active) {
+      const button = $("#detailFavoriteButton");
+      button.textContent = active
+        ? "♥ Remove from favorites"
+        : "♡ Add to favorites";
+
+      button.onclick = () => {
+        const state = toggleFavorite(currentPack.id);
+        updateDetailFavoriteButton(state);
+      };
+    }
+
+    /* =========================================================
+       NAVIGATION
+       ========================================================= */
+
+    function getRoute() {
+      const hash = decodeURIComponent(location.hash || "");
+
+      if (hash.startsWith("#pack/")) {
+        return {
+          type: "pack",
+          id: hash.slice(6)
+        };
+      }
+
+      if (hash === "#favorites") {
+        return { type: "favorites" };
+      }
+
+      return { type: "home" };
+    }
+
+    function applyRoute() {
+      const route = getRoute();
+
+      if (route.type === "pack") {
+        openPackById(route.id);
+        return;
+      }
+
+      if (route.type === "favorites") {
+        showFavorites(false);
+        return;
+      }
+
+      goHome(false);
+    }
+
+    function goHome(changeHash = true) {
+      $("#detailView").style.display = "none";
+      $("#homeView").style.display = "block";
+
+      $("#navHome").classList.add("active");
+      $("#navFavorites").classList.remove("active");
+
+      $("#sectionTitle").textContent = "Featured Packs";
+
+      renderPacks();
+
+      if (changeHash && location.hash) {
+        history.pushState({}, "", location.pathname + location.search);
+      }
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function showFavorites(changeHash = true) {
+      $("#detailView").style.display = "none";
+      $("#homeView").style.display = "block";
+
+      $("#navHome").classList.remove("active");
+      $("#navFavorites").classList.add("active");
+
+      const favoriteIDs = new Set(getFavorites());
+      const favoritePacks = packs.filter(pack => favoriteIDs.has(pack.id));
+
+      renderPacks(favoritePacks);
+
+      if (changeHash) {
+        history.pushState({}, "", "#favorites");
+      }
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    window.addEventListener("hashchange", applyRoute);
+    window.addEventListener("popstate", applyRoute);
+
+    /* =========================================================
+       SEARCH / SORT
+       ========================================================= */
+
+    $("#searchInput").addEventListener("input", () => {
+      $("#navFavorites").classList.remove("active");
+      $("#navHome").classList.add("active");
+      renderPacks();
+    });
+
+    $("#sortSelect").addEventListener("change", () => {
+      renderPacks();
+    });
+
+    function focusSearch() {
+      $("#searchInput").focus();
+      $("#librarySection").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+
+    function scrollToPacks() {
+      $("#librarySection").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+
+    /* =========================================================
+       LIGHTBOX
+       ========================================================= */
+
+    function openLightbox(src, alt) {
+      $("#lightboxImage").src = src;
+      $("#lightboxImage").alt = alt || "";
+      $("#lightbox").classList.add("open");
+      document.body.classList.add("no-scroll");
+    }
+
+    function closeLightbox() {
+      $("#lightbox").classList.remove("open");
+      document.body.classList.remove("no-scroll");
+      $("#lightboxImage").src = "";
+    }
+
+    $("#lightbox").addEventListener("click", event => {
+      if (event.target === $("#lightbox")) {
+        closeLightbox();
+      }
+    });
+
+    window.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        closeLightbox();
+      }
+    });
+
+    /* =========================================================
+       TOASTS
+       ========================================================= */
+
+    function showToast(message) {
+      const stack = $("#toastStack");
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      toast.textContent = message;
+      stack.appendChild(toast);
+
+      setTimeout(() => {
+        toast.remove();
+      }, 2400);
+    }
+
+    /* =========================================================
+       SAFE TEXT
+       ========================================================= */
+
+    function escapeHTML(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    /* =========================================================
+       START
+       ========================================================= */
+
+    updateFavoriteCount();
+    loadLibrary();
+  </script>
+</body>
+</html>
