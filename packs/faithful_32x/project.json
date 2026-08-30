@@ -1,0 +1,19 @@
+{
+  "name": "Faithful 32x",
+  "description": "A higher-resolution Minecraft experience.",
+  "version": "VERSION",
+  "author": "Faithful",
+  "type": "Resource Pack",
+  "format": ".mcpack",
+  "cover": "assets/main.jpg",
+  "previews": [
+    "assets/1.jpg",
+    "assets/2.jpg",
+    "assets/3.jpg",
+    "assets/4.jpg",
+    "assets/5.jpg",
+    "assets/6.jpg"
+  ],
+  "download": "download/faithful_32x.mcpack",
+  "source": "https://faithfulpack.net/"
+}
