@@ -5,15 +5,13 @@
   "author": "devendrn",
   "type": "Shader Pack",
   "format": ".mcpack",
-
-  "cover": "assets/main.jpg",
-
+  "cover": "assets/main.pmg",
   "previews": [
     "assets/1.jpg",
-    "assets/2.jpg"
+    "assets/2.jpg",
+    "assets/3.jpg",
+    "assets/5.jpg",
+    "assets/6.jpg"
   ],
-
-  "download": "download/faithful.mcpack",
-
-  "source": "https://faithfulpack.net/"
+  "source": "https://www.curseforge.com/minecraft-bedrock/texture-packs/newb-shader/"
 }
