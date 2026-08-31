@@ -1,0 +1,19 @@
+{
+  "name": "Faithful 64x",
+  "description": "A higher,higher-resolution Minecraft experience.",
+  "version": "1.0.0",
+  "author": "Faithful",
+  "type": "Resource Pack",
+  "format": ".mcpack",
+  "cover": "assets/main.png",
+  "previews": [
+    "assets/1.png",
+    "assets/2.png",
+    "assets/3.png",
+    "assets/4.png",
+    "assets/5.png",
+    "assets/6.png"
+  ],
+  "download": "download/faithful_64x.mcpack",
+  "source": "https://faithfulpack.net/"
+}
