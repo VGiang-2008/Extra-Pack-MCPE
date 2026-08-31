@@ -1,0 +1,19 @@
+{
+  "name": "Newb",
+  "description": "Newb is a Shader Pack enchanced your visuals get vibrants!",
+  "version": "0.16.55",
+  "author": "devendrn",
+  "type": "Shader Pack",
+  "format": ".mcpack",
+
+  "cover": "assets/main.jpg",
+
+  "previews": [
+    "assets/1.jpg",
+    "assets/2.jpg"
+  ],
+
+  "download": "download/faithful.mcpack",
+
+  "source": "https://faithfulpack.net/"
+}
