@@ -2,7 +2,7 @@
   "name": "Alex's Mobs ( Unofficial bedrock port )",
   "description": "From Java, Alex Mobs added to your world so many mob base in Real Life",
   "version": "1.0.0",
-  "author": "Rabin studio",
+  "author": "Clay",
   "type": "Add-Ons",
   "format": ".mcaddon",
   "cover": "assets/main.jpg",
@@ -15,5 +15,5 @@
     "assets/6.png"
   ],
   "download": "download/alexs_mob.mcaddon",
-  "source": "https://www.curseforge.com/minecraft-bedrock/addons/alex-mobs"
+  "source": "https://mcpedl.com/alex-s-mobs/#downloads"
 }
