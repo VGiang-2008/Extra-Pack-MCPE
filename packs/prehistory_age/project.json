@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "author": "TryzzMC",
   "type": "Add-Ons",
-  "format": ".mcpack",
+  "format": ".mcaddon",
   "cover": "assets/main.jpg",
   "previews": [
     "assets/1.png",
