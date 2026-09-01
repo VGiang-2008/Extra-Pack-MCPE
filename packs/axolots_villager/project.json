@@ -1,0 +1,19 @@
+{
+  "name": "Axolotl villager",
+  "description": "Replace bored villager with cute axolotl textures",
+  "version": "1.0.0",
+  "author":"Parzival",
+  "type": "Resource Pack",
+  "format": ".mcpack",
+  "cover": "assets/main.jpg",
+  "previews": [
+    "assets/1.png",
+    "assets/2.jpg",
+    "assets/3.webp",
+    "assets/4.jpg",
+    "assets/5.jpg",
+    "assets/6.webp"
+  ],
+  "download": "download/axolots_villager.mcpack",
+  "source": "https://www.curseforge.com/minecraft-bedrock/texture-packs/axolotl-villagers-bedrock-edition/"
+}
