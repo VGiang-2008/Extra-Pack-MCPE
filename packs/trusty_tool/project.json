@@ -1,0 +1,19 @@
+{
+  "name": "Trusty Tool",
+  "description": "If you bored witg minecraft default tool texture, try Trusty tool for 3D tools",
+  "version": "1.0.0",
+  "author": "Parzival",
+  "type": "Resource Pack",
+  "format": ".mcpack",
+  "cover": "assets/main.png",
+  "previews": [
+    "assets/1.jpg",
+    "assets/2.png",
+    "assets/3.png",
+    "assets/4.png",
+    "assets/5.png",
+    "assets/6.png"
+  ],
+  "download": "download/trusty_tool.mcpack",
+  "source": "https://www.curseforge.com/minecraft-bedrock/texture-packs/trusty-tools"
+}
